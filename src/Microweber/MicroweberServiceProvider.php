@@ -122,6 +122,9 @@ class MicroweberServiceProvider extends ServiceProvider
         $this->app->register('Conner\Tagging\Providers\TaggingServiceProvider');
 
         $this->aliasInstance->alias('Carbon', 'Carbon\Carbon');
+
+        $this->app->register('Nwidart\Modules\LaravelModulesServiceProvider');
+        $this->aliasInstance->alias('Module', 'Nwidart\Modules\Facades\Module::class');
     }
 
     protected function registerLaravelProviders()
@@ -230,7 +233,7 @@ class MicroweberServiceProvider extends ServiceProvider
             'log_manager' => 'LogManager',
             'option_manager' => 'OptionManager',
             'template' => 'Template',
-            'modules' => 'Modules',
+            'modules_manager' => 'Modules',
             'category_manager' => 'CategoryManager',
             'menu_manager' => 'MenuManager',
             'user_manager' => 'UserManager',
@@ -310,6 +313,28 @@ class MicroweberServiceProvider extends ServiceProvider
         if (file_exists($routesFile)) {
             include $routesFile;
         }
+/*
+        $routeCollection = \Route::getRoutes();
+        foreach ($routeCollection as $route) {
+
+            if (isset($route->action) && isset($route->action['middleware'])) {
+                if((is_array($route->action['middleware']) && in_array('module', $route->action['middleware']))
+                    || (is_array($route->action['middleware']) && in_array('module.admin', $route->action['middleware']))
+                    || (is_string($route->action['middleware']) && $route->action['middleware'] == 'module')
+                    || (is_string($route->action['middleware']) && $route->action['middleware'] == 'module.admin')) {
+
+                    // Call with controller
+                    if (isset($route->action['controller']) && !empty($route->action['controller'])) {
+                        mw()->modules_manager->register($route->uri, $route->action['controller']);
+                    }
+
+                    // Call with uses
+                    if (isset($route->action['uses']) && is_callable($route->action['uses'])) {
+                        mw()->modules_manager->register($route->uri, $route->action['uses']);
+                    }
+                }
+            }
+        }*/
     }
 
     public function autoloadModules($className)

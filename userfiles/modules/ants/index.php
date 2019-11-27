@@ -12,4 +12,4 @@ if($how_many_ants == false or $how_many_ants == '' or intval( $how_many_ants) ==
 </script>
 <?php if(is_admin()): ?>
 <?php print notif("Click here to edit the Ants"); ?>
-<?php endif;
+<?php endif; ?>

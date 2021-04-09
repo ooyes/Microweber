@@ -240,31 +240,40 @@ class BackupV2
 		$categoriesIds = array();
 		$contentIds = array();
 
-        $manager = new \MicroweberPackages\Backup\BackupManager();
-
+		$exportThemeData = false;
 		if (isset($query['items'])) {
-            foreach (explode(',', $query['items']) as $item) {
-                if (!empty($item)) {
-                    $tables[] = trim($item);
-                }
-            }
+			foreach(explode(',', $query['items']) as $item) {
+				if (!empty($item)) {
+                    $item = trim($item);
+				    if ($item == 'template_data') {
+                        $exportThemeData = true;
+                        continue;
+				    }
+					$tables[] = $item;
+				}
+			}
+		}
+
+		if ($exportThemeData) {
+            $query['include_media'] = 'true';
         }
 
-        if (isset($query['items']) && $query['items'] == 'template') {
-            $manager->setExportIncludeMedia(true);
-            $manager->setExportIncludeTemplates([template_name()]);
-        }
-
+		$manager = new \MicroweberPackages\Backup\BackupManager();
 		$manager->setExportData('tables', $tables);
 
 		if (isset($query['format'])) {
 			$manager->setExportType($query['format']);
 		}
 
+        if (isset($query['include_media']) && $query['include_media'] == 'true') {
+            $manager->setExportIncludeMedia(true);
+        }
+
+        if ($exportThemeData) {
+            $manager->setExportIncludeTemplateData(true);
+        }
+
 		if (isset($query['all'])) {
-			if (isset($query['include_media']) && $query['include_media'] == 'true') {
-				$manager->setExportIncludeMedia(true);
-			}
 			$manager->setExportAllData(true);
 		}
 
